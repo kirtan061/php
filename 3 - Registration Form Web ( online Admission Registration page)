@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Online Admission Registration</h2>
+
+<form method="POST">
+
+    <h3>Personal Details</h3>
+    Full Name: <br>
+    <input type="text" name="name" required><br><br>
+
+    Email: <br>
+    <input type="text" name="email" required><br><br>
+
+    Phone: <br>
+    <input type="text" name="phone" required><br><br>
+
+    <h3>Educational Details</h3>
+    10th Percentage: <br>
+    <input type="text" name="tenth" required><br><br>
+
+    12th Percentage: <br>
+    <input type="text" name="twelfth" required><br><br>
+
+    Course Applying For: <br>
+    <select name="course" required>
+        <option>BCA</option>
+        <option>BBA</option>
+        <option>BSc IT</option>
+        <option>BA</option>
+        <option>BCom</option>
+    </select><br><br>
+
+    <button type="submit">Submit Registration</button>
+</form>
+
+<hr>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    echo "<h2>Admission Form Submitted</h2>";
+
+    echo "<b>Name:</b> " . $_POST['name'] . "<br>";
+    echo "<b>Email:</b> " . $_POST['email'] . "<br>";
+    echo "<b>Phone:</b> " . $_POST['phone'] . "<br><br>";
+
+    echo "<b>10th %:</b> " . $_POST['tenth'] . "<br>";
+    echo "<b>12th %:</b> " . $_POST['twelfth'] . "<br><br>";
+
+    echo "<b>Course Selected:</b> " . $_POST['course'] . "<br>";
+}
+?>
+
+</body>
+</html>
