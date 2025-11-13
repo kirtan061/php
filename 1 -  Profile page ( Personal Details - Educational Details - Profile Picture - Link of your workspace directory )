@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Enter Your Profile Details</h2>
+
+<form method="POST">
+    <h3>Personal Details</h3>
+    Name: <input type="text" name="name" required><br><br>
+    Age: <input type="text" name="age" required><br><br>
+    Email: <input type="text" name="email" required><br><br>
+    Phone: <input type="text" name="phone" required><br><br>
+
+    <h3>Educational Details</h3>
+    10th %: <input type="text" name="tenth" required><br><br>
+    12th %: <input type="text" name="twelfth" required><br><br>
+    College: <input type="text" name="college" required><br><br>
+
+    <h3>Profile Picture</h3>
+    Image URL: <input type="text" name="img" required><br><br>
+
+    <h3>Workspace Directory</h3>
+    Link: <input type="text" name="workspace" placeholder="workspace/index.php" required><br><br>
+
+    <button type="submit">Save Profile</button>
+</form>
+
+<hr>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    echo "<h2>Your Profile</h2>";
+
+    echo "<h3>Profile Picture</h3>";
+    echo "<img src='" . $_POST['img'] . "' width='150' height='150'><br><br>";
+
+    echo "<h3>Personal Details</h3>";
+    echo "<b>Name:</b> " . $_POST['name'] . "<br>";
+    echo "<b>Age:</b> " . $_POST['age'] . "<br>";
+    echo "<b>Email:</b> " . $_POST['email'] . "<br>";
+    echo "<b>Phone:</b> " . $_POST['phone'] . "<br><br>";
+
+    echo "<h3>Educational Details</h3>";
+    echo "<b>10th:</b> " . $_POST['tenth'] . "%<br>";
+    echo "<b>12th:</b> " . $_POST['twelfth'] . "%<br>";
+    echo "<b>College:</b> " . $_POST['college'] . "<br><br>";
+
+    echo "<h3>Workspace Directory</h3>";
+    echo "<a href='" . $_POST['workspace'] . "'>Open Workspace</a><br>";
+}
+?>
+
+</body>
+</html>
