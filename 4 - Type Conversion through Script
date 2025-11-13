@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Type Conversion</title>
+<style>
+table { border-collapse: collapse; width: 70%; margin: auto; }
+th, td { border: 1px solid black; padding: 6px; text-align: center; }
+th { background: #007BFF; color: white; }
+</style>
+</head>
+<body>
+<h2 style="text-align:center;">PHP Type Conversion</h2>
+<table>
+<tr>
+<th>Variable Name</th>
+<th>Variable Type</th>
+<th>Converted Type</th>
+<th>Converted Value</th>
+</tr>
+<?php
+$num = 100; // integer
+$str = "250"; // string
+$vars = ["num"=>$num, "str"=>$str];
+$types = ["integer", "double", "string", "boolean"];
+foreach ($vars as $name => $value) {
+$originalType = gettype($value);
+foreach ($types as $t) {
+$converted = $value;
+settype($converted, $t);
+echo "<tr>
+<td>$name</td>
+<td>$originalType</td>
+<td>$t</td>
+<td>".var_export($converted, true)."</td>
+</tr>";
+}
+}
+?>
+</table>
+</body>
+</html>
