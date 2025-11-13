@@ -1,0 +1,84 @@
+<?php
+// Create storage file
+if (!file_exists("users.txt")) {
+    file_put_contents("users.txt", "");
+}
+
+// Which page to show
+$page = isset($_GET["page"]) ? $_GET["page"] : "login";
+
+// ---------------- SIGNUP ----------------
+if (isset($_POST["signup"])) {
+    $email = $_POST["email"];
+    $pass  = $_POST["password"];
+
+    file_put_contents("users.txt", $email . "," . $pass . "\n", FILE_APPEND);
+
+    $page = "registration";
+}
+
+// ---------------- LOGIN ----------------
+if (isset($_POST["login"])) {
+    $email = $_POST["email"];
+    $pass  = $_POST["password"];
+
+    $users = file("users.txt", FILE_IGNORE_NEW_LINES);
+    $found = false;
+
+    foreach ($users as $u) {
+        list($uemail, $upass) = explode(",", $u);
+        if ($email == $uemail && $pass == $upass) {
+            $found = true;
+            break;
+        }
+    }
+
+    if ($found) {
+        $page = "profile";
+    } else {
+        echo "<script>alert('Invalid Login');</script>";
+        $page = "login";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<?php if ($page == "login") { ?>
+
+<h2>Login</h2>
+<form method="POST">
+    Email: <input type="text" name="email" required><br><br>
+    Password: <input type="password" name="password" required><br><br>
+    <button name="login">Login</button>
+</form>
+<p><a href="?page=signup">Sign Up</a></p>
+
+<?php } elseif ($page == "signup") { ?>
+
+<h2>Sign Up</h2>
+<form method="POST">
+    Email: <input type="text" name="email" required><br><br>
+    Password: <input type="password" name="password" required><br><br>
+    <button name="signup">Sign Up</button>
+</form>
+<p><a href="?page=login">Login</a></p>
+
+<?php } elseif ($page == "registration") { ?>
+
+<h2>Registration Successful!</h2>
+<p>Your account is created.</p>
+<a href="?page=login">Go to Login</a>
+
+<?php } elseif ($page == "profile") { ?>
+
+<h2>Welcome to Your Profile</h2>
+<p>You are successfully logged in.</p>
+<a href="?page=login">Logout</a>
+
+<?php } ?>
+
+</body>
+</html>
