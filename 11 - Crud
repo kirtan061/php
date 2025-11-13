@@ -1,0 +1,107 @@
+<?php
+$file = "data.txt";
+
+// Create file if not exists
+if (!file_exists($file)) {
+    file_put_contents($file, "");
+}
+
+// ---------------- ADD (CREATE) ----------------
+if (isset($_POST["add"])) {
+    $name = trim($_POST["name"]);
+    if ($name != "") {
+        file_put_contents($file, $name . "\n", FILE_APPEND);
+    }
+    header("Location: crud.php");
+    exit;
+}
+
+// ---------------- DELETE ----------------
+if (isset($_GET["delete"])) {
+    $id = $_GET["delete"];
+    $rows = file($file, FILE_IGNORE_NEW_LINES);
+    unset($rows[$id]);
+    file_put_contents($file, implode("\n", $rows));
+    header("Location: crud.php");
+    exit;
+}
+
+// ---------------- UPDATE (SAVE CHANGES) ----------------
+if (isset($_POST["update"])) {
+    $id = $_POST["id"];
+    $newname = trim($_POST["newname"]);
+
+    $rows = file($file, FILE_IGNORE_NEW_LINES);
+    $rows[$id] = $newname;
+    file_put_contents($file, implode("\n", $rows));
+
+    header("Location: crud.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple CRUD</title>
+<style>
+table { border-collapse: collapse; width: 50%; margin: auto; }
+th, td { border:1px solid black; padding:8px; text-align:center; }
+input { padding:5px; }
+</style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Simple CRUD Operations</h2>
+
+<!-- CREATE FORM -->
+<form method="POST" style="text-align:center;">
+    <input type="text" name="name" placeholder="Enter name" required>
+    <button name="add">Add</button>
+</form>
+
+<hr>
+
+<h3 style="text-align:center;">Stored Records</h3>
+
+<table>
+<tr>
+    <th>No</th>
+    <th>Name</th>
+    <th>Edit</th>
+    <th>Delete</th>
+</tr>
+
+<?php
+$rows = file($file, FILE_IGNORE_NEW_LINES);
+
+foreach ($rows as $i => $row) {
+    echo "<tr>";
+
+    echo "<td>" . ($i + 1) . "</td>";
+
+    // EDIT MODE
+    if (isset($_GET["edit"]) && $_GET["edit"] == $i) {
+        echo "
+        <td>
+            <form method='POST'>
+                <input type='text' name='newname' value='$row' required>
+                <input type='hidden' name='id' value='$i'>
+                <button name='update'>Save</button>
+            </form>
+        </td>";
+    } else {
+        echo "<td>$row</td>";
+    }
+
+    echo "<td><a href='crud.php?edit=$i'>Edit</a></td>";
+    echo "<td><a href='crud.php?delete=$i' onclick='return confirm(\"Delete record?\");'>Delete</a></td>";
+
+    echo "</tr>";
+}
+?>
+
+</table>
+
+</body>
+</html>  
