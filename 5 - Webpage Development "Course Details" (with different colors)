@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Course Details</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+background: #f4f4f4;
+text-align: center;
+margin-top: 50px;
+}
+h2 {
+color: #333;
+}
+.course {
+font-size: 20px;
+font-weight: bold;
+margin: 10px;
+}
+.c1 { color: red; }
+.c2 { color: green; }
+.c3 { color: blue; }
+.c4 { color: orange; }
+.c5 { color: purple; }
+</style>
+</head>
+<body>
+<h2>Course Details</h2>
+<?php
+$courses = ["BCA", "B.Sc Computer Science", "MCA", "MBA", "B.Com"];
+$colors = ["c1", "c2", "c3", "c4", "c5"];
+foreach ($courses as $i => $course) {
+$class = $colors[$i % count($colors)];
+echo "<div class='course $class'>$course</div>";
+}
+?>
+</body>
+</html>
