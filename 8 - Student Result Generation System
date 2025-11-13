@@ -1,0 +1,124 @@
+<?php
+// Simple storage files
+$studentFile = "students.txt";
+$marksFile   = "marks.txt";
+
+// Create files if missing
+if (!file_exists($studentFile)) file_put_contents($studentFile, "");
+if (!file_exists($marksFile)) file_put_contents($marksFile, "");
+
+$page = $_GET['page'] ?? "home";
+$message = "";
+
+// ---------------- ADD STUDENT ----------------
+if (isset($_POST["add_student"])) {
+    $line = $_POST["roll"] . "|" . $_POST["name"] . "|" . $_POST["class"] . "\n";
+    file_put_contents($studentFile, $line, FILE_APPEND);
+    $message = "Student added successfully!";
+}
+
+// ---------------- ADD MARKS ----------------
+if (isset($_POST["add_marks"])) {
+    $line = $_POST["roll"] . "|" . $_POST["subject"] . "|" . $_POST["marks"] . "|" . $_POST["outof"] . "\n";
+    file_put_contents($marksFile, $line, FILE_APPEND);
+    $message = "Marks saved!";
+}
+
+// Read students
+$students = file($studentFile, FILE_IGNORE_NEW_LINES);
+$marks = file($marksFile, FILE_IGNORE_NEW_LINES);
+?>
+
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Simple Student Result System</h1>
+
+<a href="?page=home">Home</a> |
+<a href="?page=add_student">Add Student</a> |
+<a href="?page=add_marks">Marks Entry</a> |
+<a href="?page=result">Generate Result</a>
+
+<hr>
+
+<?php if ($message) echo "<p><b>$message</b></p>"; ?>
+
+
+<!-- ---------------- HOME ---------------- -->
+<?php if ($page == "home"): ?>
+<h2>Welcome</h2>
+<p>Use the menu to add students, enter marks, and generate results.</p>
+
+
+<!-- ---------------- ADD STUDENT ---------------- -->
+<?php elseif ($page == "add_student"): ?>
+<h2>Add Student</h2>
+<form method="POST">
+    Roll No: <input type="text" name="roll" required><br><br>
+    Name: <input type="text" name="name" required><br><br>
+    Class: <input type="text" name="class"><br><br>
+    <button name="add_student">Add Student</button>
+</form>
+
+
+<!-- ---------------- ADD MARKS ---------------- -->
+<?php elseif ($page == "add_marks"): ?>
+<h2>Marks Entry</h2>
+<form method="POST">
+    Roll No: <input type="text" name="roll" required><br><br>
+    Subject: <input type="text" name="subject" required><br><br>
+    Marks: <input type="number" name="marks" required><br><br>
+    Out Of: <input type="number" name="outof" required><br><br>
+    <button name="add_marks">Save Marks</button>
+</form>
+
+
+<!-- ---------------- RESULT GENERATION ---------------- -->
+<?php elseif ($page == "result"): ?>
+<h2>Generate Result</h2>
+<form method="GET">
+    <input type="hidden" name="page" value="result">
+    Enter Roll No: <input type="text" name="roll" required>
+    <button>Show Result</button>
+</form>
+
+<?php
+if (isset($_GET["roll"])) {
+    $roll = $_GET["roll"];
+
+    echo "<h3>Marksheet for Roll No: $roll</h3>";
+
+    $total = 0;
+    $outof_total = 0;
+    $found = false;
+
+    echo "<table border='1' cellpadding='5'>
+            <tr><th>Subject</th><th>Marks</th><th>Out Of</th></tr>";
+
+    foreach ($marks as $m) {
+        list($r, $sub, $mrk, $o) = explode("|", $m);
+        if ($r == $roll) {
+            echo "<tr><td>$sub</td><td>$mrk</td><td>$o</td></tr>";
+            $total += $mrk;
+            $outof_total += $o;
+            $found = true;
+        }
+    }
+
+    echo "</table>";
+
+    if ($found) {
+        $percent = ($total / $outof_total) * 100;
+        echo "<p><b>Total Marks:</b> $total / $outof_total</p>";
+        echo "<p><b>Percentage:</b> " . number_format($percent,2) . "%</p>";
+    } else {
+        echo "<p>No marks found.</p>";
+    }
+}
+?>
+
+
+<?php endif; ?>
+
+</body>
+</html>
