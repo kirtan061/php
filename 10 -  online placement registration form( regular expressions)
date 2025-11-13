@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Placement Registration Form</h2>
+
+<form method="POST">
+    Name: <input type="text" name="name" required><br><br>
+    Email: <input type="text" name="email" required><br><br>
+    Phone: <input type="text" name="phone" required><br><br>
+    Roll No: <input type="text" name="roll" required><br><br>
+    CGPA: <input type="text" name="cgpa" required><br><br>
+    Graduation Year: <input type="text" name="year" required><br><br>
+    Password: <input type="password" name="password" required><br><br>
+
+    <button type="submit">Register</button>
+</form>
+
+<hr>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $name  = $_POST["name"];
+    $email = $_POST["email"];
+    $phone = $_POST["phone"];
+    $roll  = $_POST["roll"];
+    $cgpa  = $_POST["cgpa"];
+    $year  = $_POST["year"];
+    $pass  = $_POST["password"];
+
+    // Regular Expressions
+    $name_reg  = "/^[A-Za-z ]+$/";
+    $email_reg = "/^[\w\.\-]+@[\w\-]+\.[A-Za-z]{2,}$/";
+    $phone_reg = "/^[0-9]{10}$/";
+    $roll_reg  = "/^[A-Za-z0-9\-]+$/";
+    $cgpa_reg  = "/^(10|[0-9](\.[0-9])?)$/";
+    $year_reg  = "/^[0-9]{4}$/";
+    $pass_reg  = "/^(?=.*[A-Za-z])(?=.*\d).{6,}$/";
+
+    echo "<h3>Validation Results:</h3>";
+
+    echo "Name: " . (preg_match($name_reg, $name) ? "Valid" : "Invalid") . "<br>";
+    echo "Email: " . (preg_match($email_reg, $email) ? "Valid" : "Invalid") . "<br>";
+    echo "Phone: " . (preg_match($phone_reg, $phone) ? "Valid" : "Invalid") . "<br>";
+    echo "Roll No: " . (preg_match($roll_reg, $roll) ? "Valid" : "Invalid") . "<br>";
+    echo "CGPA: " . (preg_match($cgpa_reg, $cgpa) ? "Valid" : "Invalid") . "<br>";
+    echo "Graduation Year: " . (preg_match($year_reg, $year) ? "Valid" : "Invalid") . "<br>";
+    echo "Password: " . (preg_match($pass_reg, $pass) ? "Valid" : "Invalid") . "<br>";
+}
+?>
+
+</body>
+</html>
