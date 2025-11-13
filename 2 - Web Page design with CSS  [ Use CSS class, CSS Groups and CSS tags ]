@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Styled PHP Page</title>
+<style>
+/* CSS Tags */
+body {
+font-family: Arial, sans-serif;
+background-color: #f4f4f4;
+margin: 0;
+padding: 0;
+}
+h1, h2, h3 {
+color: #333;
+text-align: center;
+}
+/* CSS Class */
+.container {
+width: 80%;
+margin: auto;
+background: #fff;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 0 0 10px gray;
+}
+.btn {
+display: inline-block;
+background: #007BFF;
+color: white;
+padding: 8px 15px;
+border-radius: 5px;
+text-decoration: none;
+}
+.btn:hover {
+background: #0056b3;
+}
+/* CSS Grouping */
+p, li {
+font-size: 16px;
+color: #555;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1><?php echo "Welcome to My PHP Website"; ?></h1>
+<p>This page is styled using a general stylesheet (merged into this file).</p>
+<h2>Features</h2>
+<ul>
+<li>Reusable CSS classes</li>
+<li>Grouped selectors for efficiency</li>
+<li>Consistent design in one file</li>
+</ul>
+<a href="#" class="btn">Sample Button</a>
+</div>
+</body>
+</html>
