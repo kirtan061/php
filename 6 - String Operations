@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>String Operations</title>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 70%;
+        margin: 20px auto;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background: #007BFF;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<h2 style="text-align:center;">PHP String Operations</h2>
+
+<!-- FORM SHOWS ALWAYS -->
+<form method="POST" style="text-align:center;">
+    <input type="text" name="str1" placeholder="Enter String 1" required>
+    <input type="text" name="str2" placeholder="Enter String 2" required>
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+// ONLY SHOW TABLE WHEN SUBMIT IS CLICKED
+if (isset($_POST["submit"])) {
+
+    $str1 = $_POST["str1"];
+    $str2 = $_POST["str2"];
+?>
+
+<!-- TABLE SHOWS ONLY AFTER SUBMIT -->
+<table>
+    <tr>
+        <th>String 1</th>
+        <th>String 2</th>
+        <th>Operation</th>
+        <th>Result</th>
+    </tr>
+
+    <tr><td><?= $str1 ?></td><td><?= $str2 ?></td><td>Concatenation</td><td><?= $str1.$str2 ?></td></tr>
+
+    <tr><td><?= $str1 ?></td><td>-</td><td>Length of 1</td><td><?= strlen($str1) ?></td></tr>
+    <tr><td><?= $str2 ?></td><td>-</td><td>Length of 2</td><td><?= strlen($str2) ?></td></tr>
+
+    <tr><td><?= $str1 ?></td><td><?= $str2 ?></td><td>Compare</td><td><?= strcmp($str1,$str2) ?></td></tr>
+
+    <tr><td><?= $str1 ?></td><td>-</td><td>Uppercase</td><td><?= strtoupper($str1) ?></td></tr>
+    <tr><td><?= $str2 ?></td><td>-</td><td>Lowercase</td><td><?= strtolower($str2) ?></td></tr>
+
+    <tr><td><?= $str1 ?></td><td>-</td><td>Reverse</td><td><?= strrev($str1) ?></td></tr>
+    <tr><td><?= $str2 ?></td><td>-</td><td>Reverse</td><td><?= strrev($str2) ?></td></tr>
+
+    <tr><td><?= $str1 ?></td><td>-</td><td>First 3 Chars</td><td><?= substr($str1,0,3) ?></td></tr>
+    <tr><td><?= $str2 ?></td><td>-</td><td>First 3 Chars</td><td><?= substr($str2,0,3) ?></td></tr>
+</table>
+
+<?php
+}
+?>
+
+</body>
+</html>
