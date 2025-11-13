@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Date & Time Operations (User Input)</h2>
+
+<form method="POST">
+    Enter Date & Time (YYYY-MM-DD HH:MM:SS): <br>
+    <input type="text" name="datetime" placeholder="2024-12-25 14:30:00" required>
+    <br><br>
+    <button type="submit">Show Results</button>
+</form>
+<hr>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $given = $_POST["datetime"];
+    $time = strtotime($given);
+
+    echo "<b>Given Date/Time:</b> $given <br><br>";
+
+    // Operation 1
+    echo "<b>Operation:</b> Add 5 Days<br>";
+    echo "<b>Result:</b> " . date("Y-m-d H:i:s", strtotime("+5 days", $time)) . "<br><br>";
+
+    // Operation 2
+    echo "<b>Operation:</b> Subtract 2 Hours<br>";
+    echo "<b>Result:</b> " . date("Y-m-d H:i:s", strtotime("-2 hours", $time)) . "<br><br>";
+
+    // Operation 3
+    echo "<b>Operation:</b> Day of the Week<br>";
+    echo "<b>Result:</b> " . date("l", $time) . "<br><br>";
+
+    // Operation 4
+    echo "<b>Operation:</b> Formatted Date<br>";
+    echo "<b>Result:</b> " . date("d-M-Y h:i A", $time) . "<br><br>";
+}
+?>
+
+</body>
+</html>
