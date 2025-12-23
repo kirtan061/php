@@ -1,0 +1,120 @@
+<?php
+class SubjectMIS
+{
+    private $data = array();
+    private $connected = false;
+
+    // CONNECT
+    public function connect()
+    {
+        $this->connected = true;
+        echo "<b>Connected</b><br>";
+    }
+
+    // DISCONNECT
+    public function disconnect()
+    {
+        $this->connected = false;
+        echo "<b>Disconnected</b><br>";
+    }
+
+    // INSERT
+    public function insert($code, $name, $marks)
+    {
+        if ($this->connected) {
+            $this->data[$code] = array($name, $marks);
+            echo "Record Inserted<br>";
+        } else {
+            echo "Please Connect First<br>";
+        }
+    }
+
+    // UPDATE
+    public function update($code, $name, $marks)
+    {
+        if ($this->connected && isset($this->data[$code])) {
+            $this->data[$code] = array($name, $marks);
+            echo "Record Updated<br>";
+        }
+    }
+
+    // DELETE
+    public function delete($code)
+    {
+        if ($this->connected && isset($this->data[$code])) {
+            unset($this->data[$code]);
+            echo "Record Deleted<br>";
+        }
+    }
+
+    // SELECT (DISPLAY)
+    public function select()
+    {
+        if (!$this->connected) {
+            echo "Please Connect First<br>";
+            return;
+        }
+
+        if (empty($this->data)) {
+            echo "No Records Found<br>";
+            return;
+        }
+
+        echo "<h3>Stored Records</h3>";
+        echo "<table border='1' cellpadding='6'>
+              <tr><th>Code</th><th>Name</th><th>Marks</th></tr>";
+
+        foreach ($this->data as $c => $v) {
+            echo "<tr>
+                    <td>$c</td>
+                    <td>$v[0]</td>
+                    <td>$v[1]</td>
+                  </tr>";
+        }
+        echo "</table>";
+    }
+}
+
+session_start();
+
+if (!isset($_SESSION['obj'])) {
+    $_SESSION['obj'] = new SubjectMIS();
+}
+
+$obj = $_SESSION['obj'];
+
+/* BUTTON ACTIONS */
+if (isset($_POST['connect'])) $obj->connect();
+if (isset($_POST['insert'])) $obj->insert($_POST['code'], $_POST['name'], $_POST['marks']);
+if (isset($_POST['update'])) $obj->update($_POST['code'], $_POST['name'], $_POST['marks']);
+if (isset($_POST['delete'])) $obj->delete($_POST['code']);
+if (isset($_POST['disconnect'])) $obj->disconnect();
+?>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Subject MIS</h2>
+
+<form method="post">
+    Code: <input type="text" name="code"><br><br>
+    Name: <input type="text" name="name"><br><br>
+    Marks: <input type="number" name="marks"><br><br>
+
+    <input type="submit" name="connect" value="Connect">
+    <input type="submit" name="insert" value="Insert">
+    <input type="submit" name="update" value="Update">
+    <input type="submit" name="delete" value="Delete">
+    <input type="submit" name="disconnect" value="Disconnect">
+</form>
+
+<hr>
+
+<?php
+// 🔥 ALWAYS SHOW DATA AT BOTTOM AFTER ANY ACTION
+$obj->select();
+?>
+
+</body>
+</html>
