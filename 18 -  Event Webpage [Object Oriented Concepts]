@@ -1,0 +1,83 @@
+
+<?php
+session_start();
+
+if (!isset($_SESSION['events'])) {
+    $_SESSION['events'] = array();
+}
+
+// --------------------------------------
+// Event Class
+// --------------------------------------
+class Event {
+    public $label;
+    public $color;
+    public $fontSize;
+
+    // Constructor
+    function __construct($label, $color, $fontSize) {
+        $this->label = $label;
+        $this->color = $color;
+        $this->fontSize = $fontSize;
+    }
+
+    // Display method
+    function show_event() {
+        echo "<p style='color:{$this->color}; font-size:{$this->fontSize}px;'>
+                📌 {$this->label}
+              </p>";
+    }
+
+    // Destructor
+    function __destruct() {
+        // Optional cleanup message
+        // echo "Event '{$this->label}' removed.<br>";
+    }
+}
+
+
+// --------------------------------------
+// Admin "Form"
+// --------------------------------------
+$events = &$_SESSION['events'];
+
+if (isset($_POST['add'])) {
+    $label = $_POST['label'];
+    $color = $_POST['color'];
+    $fontSize = $_POST['fontSize'];
+
+    $newEvent = new Event($label, $color, $fontSize);
+    $events[] = $newEvent;
+}
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Event Webpage</title>
+</head>
+<body>
+
+<h2>Admin: Add Event</h2>
+<form method="post">
+    Event Label: <input type="text" name="label" required><br><br>
+    Font Size: <input type="number" name="fontSize" value="20" required> px<br><br>
+    Color: <input type="color" name="color" value="#ff0000"><br><br>
+
+    <button type="submit" name="add">Add Event</button>
+</form>
+
+<hr>
+
+<h2>Event List</h2>
+
+<?php
+// Display events
+foreach ($events as $ev) {
+    $ev->show_event();
+}
+?>
+
+</body>
+</html>
