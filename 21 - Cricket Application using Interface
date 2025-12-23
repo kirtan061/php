@@ -1,0 +1,150 @@
+<?php
+session_start();
+
+/* ========= INTERFACE ========= */
+interface CricketGame
+{
+    public function enterPlayer($code, $name, $runs, $innings, $out);
+    public function averageSingle($code);
+    public function averageAll();
+    public function sortByRuns();
+}
+
+/* ========= CLASS IMPLEMENTATION ========= */
+class CricketPlayer implements CricketGame
+{
+    public function __construct()
+    {
+        if (!isset($_SESSION['players'])) {
+            $_SESSION['players'] = [];
+        }
+    }
+
+    private function calculateAverage($runs, $out)
+    {
+        return ($out == 0) ? $runs : round($runs / $out, 2);
+    }
+
+    // a) Enter details of players
+    public function enterPlayer($code, $name, $runs, $innings, $out)
+    {
+        $_SESSION['players'][$code] = [
+            "code" => $code,
+            "name" => $name,
+            "runs" => $runs,
+            "innings" => $innings,
+            "out" => $out,
+            "avg" => $this->calculateAverage($runs, $out)
+        ];
+
+        echo "<b>Player details added successfully</b><br><br>";
+    }
+
+    // b) Display average runs of a single player
+    public function averageSingle($code)
+    {
+        if (isset($_SESSION['players'][$code])) {
+            $p = $_SESSION['players'][$code];
+            echo "<b>Player:</b> {$p['name']}<br>";
+            echo "<b>Average Runs:</b> {$p['avg']}<br><br>";
+        } else {
+            echo "Player not found<br><br>";
+        }
+    }
+
+    // c) Average runs of all players
+    public function averageAll()
+    {
+        echo "<b>Average Runs of All Players</b><br>";
+        foreach ($_SESSION['players'] as $p) {
+            echo "{$p['name']} : {$p['avg']}<br>";
+        }
+        echo "<br>";
+    }
+
+    // d) Display players sorted by runs
+    public function sortByRuns()
+    {
+        usort($_SESSION['players'], function ($a, $b) {
+            return $b['runs'] <=> $a['runs'];
+        });
+        echo "<b>Players sorted by runs</b><br><br>";
+    }
+
+    // Display table (niche)
+    public function showAll()
+    {
+        if (empty($_SESSION['players'])) {
+            echo "No records available";
+            return;
+        }
+
+        echo "<h3>Player Details</h3>";
+        echo "<table border='1' cellpadding='6'>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Runs</th>
+                    <th>Innings</th>
+                    <th>Times Out</th>
+                    <th>Average</th>
+                </tr>";
+
+        foreach ($_SESSION['players'] as $p) {
+            echo "<tr>
+                    <td>{$p['code']}</td>
+                    <td>{$p['name']}</td>
+                    <td>{$p['runs']}</td>
+                    <td>{$p['innings']}</td>
+                    <td>{$p['out']}</td>
+                    <td>{$p['avg']}</td>
+                  </tr>";
+        }
+        echo "</table>";
+    }
+}
+
+$game = new CricketPlayer();
+
+/* ========= MENU ACTIONS ========= */
+if (isset($_POST['add']))
+    $game->enterPlayer($_POST['code'], $_POST['name'], $_POST['runs'], $_POST['innings'], $_POST['out']);
+
+if (isset($_POST['single']))
+    $game->averageSingle($_POST['code']);
+
+if (isset($_POST['all']))
+    $game->averageAll();
+
+if (isset($_POST['sort']))
+    $game->sortByRuns();
+?>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Cricket Game Application </h2>
+
+<form method="post">
+    Player Code: <input type="text" name="code" required><br><br>
+    Name: <input type="text" name="name"><br><br>
+    Runs: <input type="number" name="runs"><br><br>
+    Innings Played: <input type="number" name="innings"><br><br>
+    No. of Times Out: <input type="number" name="out"><br><br>
+
+    <input type="submit" name="add" value="Enter Player Details">
+    <input type="submit" name="single" value="Average of Single Player">
+    <input type="submit" name="all" value="Average of All Players">
+    <input type="submit" name="sort" value="Sort Players by Runs">
+</form>
+
+<hr>
+
+<?php
+// 🔥 Always show data at bottom
+$game->showAll();
+?>
+
+</body>
+</html>
