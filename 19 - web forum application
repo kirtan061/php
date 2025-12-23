@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OOP PHP Web Forum (User Input)</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+        .box {
+            width: 600px;
+            background: white;
+            padding: 20px;
+            margin: 30px auto;
+            border-radius: 8px;
+        }
+        input, textarea, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+        }
+        .output {
+            background: #fafafa;
+            padding: 10px;
+            margin-top: 10px;
+            border-left: 4px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// ---------------- PARENT CLASS ----------------
+class Member {
+    protected $username;
+    protected $email;
+
+    function __construct($username, $email) {
+        $this->username = $username;
+        $this->email = $email;
+    }
+
+    function login() {
+        echo "<div class='output'>Member <b>$this->username</b> logged in.</div>";
+    }
+
+    function logout() {
+        echo "<div class='output'>Member <b>$this->username</b> logged out.</div>";
+    }
+
+    function createPost($post) {
+        echo "<div class='output'><b>$this->username</b> posted: $post</div>";
+    }
+
+    function editProfile($newEmail) {
+        $this->email = $newEmail;
+        echo "<div class='output'>Profile updated. New Email: $this->email</div>";
+    }
+
+    function showProfile() {
+        echo "<div class='output'>
+              <b>Username:</b> $this->username <br>
+              <b>Email:</b> $this->email
+              </div>";
+    }
+}
+
+// ---------------- CHILD CLASS ----------------
+class Administrator extends Member {
+
+    // Method Overriding
+    function login() {
+        echo "<div class='output' style='color:red;'>
+              Administrator <b>$this->username</b> logged in with full access.
+              </div>";
+    }
+
+    function createForum($forum) {
+        echo "<div class='output'>Forum <b>$forum</b> created by Admin.</div>";
+    }
+
+    function deleteForum($forum) {
+        echo "<div class='output'>Forum <b>$forum</b> deleted by Admin.</div>";
+    }
+
+    function banMember($member) {
+        echo "<div class='output'>Member <b>$member</b> has been banned.</div>";
+    }
+}
+?>
+
+<!-- ================= MEMBER FORM ================= -->
+<div class="box">
+<h2>Member Panel</h2>
+
+<form method="post">
+    <input type="text" name="m_username" placeholder="Username" required>
+    <input type="email" name="m_email" placeholder="Email" required>
+    <textarea name="post" placeholder="Write post"></textarea>
+    <input type="email" name="new_email" placeholder="Update Email">
+    <button name="member_action">Submit Member Action</button>
+</form>
+
+<?php
+if (isset($_POST['member_action'])) {
+    $member = new Member($_POST['m_username'], $_POST['m_email']);
+    $member->login();
+    if (!empty($_POST['post']))
+        $member->createPost($_POST['post']);
+    if (!empty($_POST['new_email']))
+        $member->editProfile($_POST['new_email']);
+    $member->showProfile();
+    $member->logout();
+}
+?>
+</div>
+
+<!-- ================= ADMIN FORM ================= -->
+<div class="box">
+<h2>Administrator Panel</h2>
+
+<form method="post">
+    <input type="text" name="a_username" placeholder="Admin Username" required>
+    <input type="email" name="a_email" placeholder="Admin Email" required>
+    <input type="text" name="forum" placeholder="Forum Name">
+    <input type="text" name="ban_user" placeholder="Member to Ban">
+    <button name="admin_action">Submit Admin Action</button>
+</form>
+
+<?php
+if (isset($_POST['admin_action'])) {
+    $admin = new Administrator($_POST['a_username'], $_POST['a_email']);
+    $admin->login(); // overridden method
+    if (!empty($_POST['forum']))
+        $admin->createForum($_POST['forum']);
+    if (!empty($_POST['ban_user']))
+        $admin->banMember($_POST['ban_user']);
+    if (!empty($_POST['forum']))
+        $admin->deleteForum($_POST['forum']);
+    $admin->logout();
+}
+?>
+</div>
+
+</body>
+</html>
