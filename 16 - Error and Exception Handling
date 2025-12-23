@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error & Exception Handling with User Input</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+        .container {
+            background: white;
+            width: 450px;
+            padding: 20px;
+            margin: 50px auto;
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+<h2>Error & Exception Handling</h2>
+
+<form method="post">
+    <label>Enter First Number:</label>
+    <input type="text" name="num1" required>
+
+    <label>Enter Second Number:</label>
+    <input type="text" name="num2" required>
+
+    <button type="submit" name="submit">Divide</button>
+</form>
+
+<?php
+// Show all errors
+error_reporting(E_ALL);
+
+// Custom Error Handler
+function myErrorHandler($errno, $errstr) {
+    echo "<p class='error'><b>Error:</b> $errstr</p>";
+}
+set_error_handler("myErrorHandler");
+
+if (isset($_POST['submit'])) {
+
+    $a = $_POST['num1'];
+    $b = $_POST['num2'];
+
+    try {
+        // Exception handling for invalid input
+        if (!is_numeric($a) || !is_numeric($b)) {
+            throw new Exception("Please enter valid numeric values");
+        }
+
+        // Error handling for divide by zero
+        if ($b == 0) {
+            trigger_error("Division by zero is not allowed", E_USER_WARNING);
+        } else {
+            $result = $a / $b;
+            echo "<p class='success'><b>Result:</b> $result</p>";
+        }
+    }
+    catch (Exception $e) {
+        echo "<p class='error'><b>Exception:</b> " . $e->getMessage() . "</p>";
+    }
+    finally {
+        echo "<p><b>Operation Finished</b></p>";
+    }
+}
+?>
+
+</div>
+</body>
+</html>
