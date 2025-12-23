@@ -1,0 +1,84 @@
+<?php
+// ---------------- AJAX REQUEST HANDLER ----------------
+if (isset($_GET['query'])) {
+
+    // Sample data (No Database)
+    $data = array(
+        "Amit", "Ankit", "Rahul", "Rohit", "Ramesh",
+        "Suresh", "Kiran", "Kirtan", "Kunal", "Kavita"
+    );
+
+    $search = strtolower($_GET['query']);
+    $found = false;
+
+    foreach ($data as $name) {
+        if (strpos(strtolower($name), $search) !== false) {
+            echo "<div class='item'>$name</div>";
+            $found = true;
+        }
+    }
+
+    if (!$found) {
+        echo "<div class='item'>No result found</div>";
+    }
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Search Box (</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+        .box {
+            width: 400px;
+            background: white;
+            padding: 20px;
+            margin: 60px auto;
+            border-radius: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+        }
+        .item {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+
+    <script>
+        function searchData(value) {
+            if (value === "") {
+                document.getElementById("result").innerHTML = "";
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "?query=" + value, true);
+            xhr.send();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("result").innerHTML = xhr.responseText;
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="box">
+    <h2>Dynamic Search </h2>
+
+    <input type="text" placeholder="Search name..." onkeyup="searchData(this.value)">
+    <div id="result"></div>
+</div>
+
+</body>
+</html>
