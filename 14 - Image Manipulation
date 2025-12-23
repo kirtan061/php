@@ -1,0 +1,93 @@
+/*Image manipulation without GD(Graphics Draw library) is not possible in PHP.*/
+
+
+
+<?php
+if (isset($_POST['action']) && isset($_FILES['img'])) {
+
+    /* ---- CREATE UPLOAD FOLDER IF NOT EXISTS ---- */
+    if (!is_dir("upload")) {
+        mkdir("upload");
+    }
+
+    /* ---- SAFE FILE NAME ---- */
+    $imgName = time() . "_" . basename($_FILES['img']['name']);
+    $tmp  = $_FILES['img']['tmp_name'];
+    $path = "upload/" . $imgName;
+
+    move_uploaded_file($tmp, $path);
+
+    /* ---- LOAD IMAGE SAFELY ---- */
+    $info = getimagesize($path);
+    if ($info === false) {
+        die("Invalid image file");
+    }
+
+    $type = $info[2];
+
+    if ($type == IMAGETYPE_JPEG)
+        $src = imagecreatefromjpeg($path);
+    elseif ($type == IMAGETYPE_PNG)
+        $src = imagecreatefrompng($path);
+    elseif ($type == IMAGETYPE_GIF)
+        $src = imagecreatefromgif($path);
+    else
+        die("Unsupported image format");
+
+    $w = imagesx($src);
+    $h = imagesy($src);
+
+    /* ---- RESIZE ---- */
+    if ($_POST['action'] == "resize") {
+        $dst = imagecreatetruecolor(200, 200);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, 200, 200, $w, $h);
+    }
+
+    /* ---- CROP ---- */
+    if ($_POST['action'] == "crop") {
+        $dst = imagecrop($src, [
+            'x' => 0,
+            'y' => 0,
+            'width' => 150,
+            'height' => 150
+        ]);
+    }
+
+    /* ---- WATERMARK ---- */
+    if ($_POST['action'] == "watermark") {
+        $dst = $src;
+        $wm = imagecreatefrompng("watermark.png");
+        imagecopy($dst, $wm, 10, 10, 0, 0, imagesx($wm), imagesy($wm));
+        imagedestroy($wm);
+    }
+
+    /* ---- OUTPUT WITH FORMAT CONVERSION ---- */
+    header("Content-Type: image/png");
+    imagepng($dst);
+
+    imagedestroy($src);
+    if ($dst !== $src) imagedestroy($dst);
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHP Image Manipulation</title>
+</head>
+<body>
+
+<h2>Image Manipulation using PHP</h2>
+
+<form method="post" enctype="multipart/form-data">
+    Select Image:<br>
+    <input type="file" name="img" required><br><br>
+
+    <button name="action" value="resize">Resize Image</button>
+    <button name="action" value="crop">Crop Image</button>
+    <button name="action" value="watermark">Add Watermark</button>
+</form>
+
+</body>
+</html>
