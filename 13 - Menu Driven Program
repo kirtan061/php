@@ -1,0 +1,142 @@
+<?php
+$result = "";
+
+/* ===== FUNCTIONS ===== */
+
+function showSize($f) {
+    return file_exists($f) ? filesize($f)." bytes" : "File not found";
+}
+
+function showTime($f) {
+    if (!file_exists($f)) return "File not found";
+    return
+        "Last Access : ".date("d-m-Y H:i:s", fileatime($f))."<br>".
+        "Last Modified : ".date("d-m-Y H:i:s", filemtime($f))."<br>".
+        "Last Changed : ".date("d-m-Y H:i:s", filectime($f));
+}
+
+function showOwner($f) {
+    if (!file_exists($f)) return "File not found";
+    return "Owner ID : ".fileowner($f)." | Group ID : ".filegroup($f);
+}
+
+function showType($f) {
+    if (is_file($f)) return "Regular File";
+    if (is_dir($f)) return "Directory";
+    return "Unknown";
+}
+
+function addFile($f, $data) {
+    file_put_contents($f, $data);
+    return "File created successfully";
+}
+
+function deleteFile($f) {
+    if (!file_exists($f)) return "File not found";
+    unlink($f);
+    return "File deleted successfully";
+}
+
+/* COPY FILE  */
+function copyFileOp($src, $dest) {
+    if (!file_exists($src)) return "Source file not found";
+    if (empty($dest)) return "Please enter destination file name";
+    copy($src, $dest);
+    return "File copied successfully";
+}
+
+/* DIRECTORY OPERATIONS */
+
+function traverseDir($dir, $level = 0) {
+    if (!is_dir($dir)) return "Not a directory";
+    $out = "";
+    foreach (scandir($dir) as $x) {
+        if ($x != "." && $x != "..") {
+            $out .= str_repeat("&nbsp;", $level * 4)."|-- ".$x."<br>";
+            if (is_dir("$dir/$x")) {
+                $out .= traverseDir("$dir/$x", $level + 1);
+            }
+        }
+    }
+    return $out;
+}
+
+function removeDir($dir) {
+    if (!is_dir($dir)) return "Directory not found";
+    rmdir($dir);
+    return "Directory removed successfully";
+}
+
+/* ===== MENU LOGIC ===== */
+
+if (isset($_POST['action'])) {
+    $name = trim($_POST['name']);
+    $content = $_POST['content'];
+    $dest = trim($_POST['dest']);
+
+    switch ($_POST['action']) {
+        case "size":      $result = showSize($name); break;
+        case "time":      $result = showTime($name); break;
+        case "owner":     $result = showOwner($name); break;
+        case "type":      $result = showType($name); break;
+        case "add":       $result = addFile($name, $content); break;
+        case "delete":    $result = deleteFile($name); break;
+        case "copy":      $result = copyFileOp($name, $dest); break;
+        case "traverse":  $result = traverseDir($name); break;
+        case "removedir": $result = removeDir($name); break;
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Menu Driven File Operations</title>
+    <style>
+        body { font-family: Arial; }
+        .box { width: 600px; margin: auto; }
+        textarea { width: 100%; height: 120px; }
+        input[type=text] { width: 100%; }
+        button { margin: 4px; }
+        .output { margin-top: 30px; }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2 align="center">Menu Driven File Operations </h2>
+
+    <form method="post">
+        <b>File / Directory Name:</b><br>
+        <input type="text" name="name" required><br><br>
+
+        <b>Content (For Add File):</b><br>
+        <textarea name="content"></textarea><br><br>
+
+        <b>Destination File (For Copy):</b><br>
+        <input type="text" name="dest"><br><br>
+
+        <button name="action" value="size">size</button>
+        <button name="action" value="time">time</button>
+        <button name="action" value="owner">owner</button>
+        <button name="action" value="type">type</button><br><br>
+
+        <button name="action" value="add">add</button>
+        <button name="action" value="delete">delete</button>
+        <button name="action" value="copy">copy</button><br><br>
+
+        <button name="action" value="traverse">traverse</button>
+        <button name="action" value="removedir">removedir</button>
+    </form>
+
+    <hr>
+
+    <div class="output">
+        <h3 align="center">Output</h3>
+        <p align="center"><?php echo $result; ?></p>
+    </div>
+</div>
+
+</body>
+</html>
